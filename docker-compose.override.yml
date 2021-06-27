@@ -20,7 +20,7 @@
       image: mysql:5.7
       restart: always
       ports:
-        - 33060:3306
+        - "${DATABASE_PORT_NUMBER-:3306}:3306"
       volumes:
         - xsolla_test:/var/lib/mysql
       environment:

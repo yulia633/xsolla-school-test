@@ -10,11 +10,17 @@ install:
 validate:
 	composer validate
 
+up:
+	docker-compose up -d --build
+
+down:
+	docker-compose down
+
 compose-start:
 	docker-compose up -d
 
 start:
-	php -S 0.0.0.0:8080 index.php
+	php -S 0.0.0.0:8080 public/index.php
 
 ci:
 	docker-compose build
