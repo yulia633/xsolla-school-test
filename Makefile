@@ -1,6 +1,9 @@
 compose-bash:
 	docker-compose run --rm app bash
 
+compose-bash-mysql:
+	docker exec -it xsolla_mysql_1 bash
+
 compose-install:
 	docker-compose run --rm app make install
 
@@ -16,9 +19,6 @@ up:
 down:
 	docker-compose down
 
-compose-start:
-	docker-compose up -d
-
 start:
 	php -S 0.0.0.0:8080 public/index.php
 
@@ -28,7 +28,7 @@ ci:
 	docker-compose -f docker-compose.yml -p xsolla-test-ci up
 
 lint:
-	composer exec phpcs -v
+	composer exec phpcs -v -- --standard=PSR12 public src tests -np
 
 test:
 	php tests
