@@ -3,21 +3,16 @@
 
   services:
     app:
-      build:
-        context: .
-        dockerfile: Dockerfile
-      image: yulia633/xsolla-test
       env_file: .env
       depends_on:
         - mysql
       ports:
         - 8080:8080
-      volumes:
-        - .:/app
       command: ["make", "start"]
 
     mysql:
       image: mysql:5.7
+      container_name: xsolla-container
       restart: always
       ports:
         - "${DATABASE_PORT_NUMBER-:3306}:3306"
