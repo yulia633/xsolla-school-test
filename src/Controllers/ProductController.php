@@ -10,10 +10,16 @@ class ProductController extends BaseController
     {
         $data = $this->container->get('service_product')->getAll();
 
+        $per = 5;
+        $page = $request->getQueryParam('page', 1);
+        $offset = ($page - 1) * $per;
+        $sliceOfData = array_slice($data, $offset, $per);
+
         if (!empty($data)) {
             $answer = [
                 'result' => 'Success',
-                'data' => $data
+                'data' => $sliceOfData,
+                'page' => $page
             ];
             $code = 200;
         } else {

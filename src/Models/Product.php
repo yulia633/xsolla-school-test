@@ -13,7 +13,7 @@ class Product
 
     public function getAll()
     {
-        $sql = "SELECT id, sku, name, price, type FROM products";
+        $sql = "SELECT id, sku, name, price, type FROM products WHERE id > 1 LIMIT 5";
 
         $query = $this->pdo->query($sql);
 
