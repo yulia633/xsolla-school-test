@@ -122,7 +122,10 @@ class ProductController extends BaseController
         $price = $post['price'];
         $type = $post['type'];
 
-        if (!empty($post)) {
+        $searchSku = $this->container->get('service_product')->getProductSku($sku);
+        $searchSku = json_decode(json_encode($searchSku), true);
+
+        if (!empty($post) && $searchSku) {
             if (is_numeric($sku)) {
                 $this->container->get('service_product')->update($sku, $name, $price, $type);
                 $answer = [
@@ -130,7 +133,7 @@ class ProductController extends BaseController
                     'message' => 'Товар успешно изменен',
                     'data' => $post
                 ];
-                $code = 201;
+                $code = 200;
             } else {
                 $answer = [
                     'result' => 'ERROR_VALIDATION',
@@ -141,7 +144,7 @@ class ProductController extends BaseController
         } else {
             $answer = [
                 'result' => 'ERROR_VALIDATION',
-                'message' => 'Товар не создан. SKU должен быть уникальным'
+                'message' => 'Товар не создан. Нет товара с таким SKU.'
             ];
             $code = 400;
         }
