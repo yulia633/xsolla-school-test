@@ -36,15 +36,7 @@ start:
 
 
 lint:
-	composer exec phpcs -v -- --standard=PSR12 public src tests -np
-
-
-test:
-	php tests
-
-
-test-coverage:
-	composer exec -v XDEBUG_MODE=coverage phpunit tests -- --coverage-clover build/logs/clover.xml
+	composer exec phpcs -v -- --standard=PSR12 public src -np
 
 
 env-prepare:
