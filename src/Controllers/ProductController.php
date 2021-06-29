@@ -88,7 +88,8 @@ class ProductController extends BaseController
                 $this->container->get('service_product')->insert($sku, $name, $price, $type);
                 $answer = [
                     'result' => 'Success',
-                    'message' => 'Товар успешно создан'
+                    'message' => 'Товар успешно создан',
+                    'data' => $post
                 ];
                 $code = 201;
             } else {
@@ -126,7 +127,8 @@ class ProductController extends BaseController
                 $this->container->get('service_product')->update($sku, $name, $price, $type);
                 $answer = [
                     'result' => 'Success',
-                    'message' => 'Товар успешно изменен'
+                    'message' => 'Товар успешно изменен',
+                    'data' => $post
                 ];
                 $code = 201;
             } else {
