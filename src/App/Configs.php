@@ -1,12 +1,11 @@
 <?php
 
 $container->set('database', function () {
-    if ($url = getenv('DATABASE_URL')) {
+    if ($url = getenv('CLEARDB_DATABASE_URL')) {
         $urlParts = parse_url($url);
 
         return [
-            // "DATABASE_HOST" => $urlParts['host'],
-            "DATABASE_HOST" => parse_url(getenv("CLEARDB_DATABASE_URL")),
+            "DATABASE_HOST" => $urlParts['host'],
             "DATABASE_NAME" => substr($urlParts['path'], 1),
             "DATABASE_USER" => $urlParts['user'],
             "DATABASE_PASSWORD" => $urlParts['pass'],
