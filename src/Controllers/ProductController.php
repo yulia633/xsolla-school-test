@@ -3,184 +3,108 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use Slim\Http\ServerRequest;
+use Slim\Http\Response;
 
 class ProductController extends BaseController
 {
-    public function getAllProducts($request, $response, $args)
+    public function getAllProducts(ServerRequest $request, Response $response, $args)
     {
-        $data = $this->container->get('service_product')->getAll();
-
-        $per = 5;
-        $page = $request->getQueryParam('page', 1);
+        $params = $request->getQueryParams();
+        $page = $params['page'] ?? 1;
+        $per = $params['per'] ?? 5;
         $offset = ($page - 1) * $per;
-        $sliceOfData = array_slice($data, $offset, $per);
 
-        if (!empty($data)) {
-            $answer = [
-                'result' => 'Success',
-                'data' => $sliceOfData,
-                'page' => $page
-            ];
-            $code = 200;
-        } else {
-            $answer = [
-                'result' => 'ERROR_VALIDATION',
-                'message' => 'Товаров нет.'
-            ];
-            $code = 404;
-        }
+        [$products, $paging] = $this->getProducts($offset, $per, $page);
 
-        $response->getBody()->write(json_encode($answer));
-        return $response
-            ->withHeader('content-type', 'application/json')
-            ->withStatus($code);
+        $responseData = [
+            'data' => $products,
+            'paging' => $paging
+        ];
+
+        return $this->response($response, $responseData, 200);
     }
 
-    public function getProduct($request, $response, $args)
+    public function getProducts($offset, $amount, $page = 1)
+    {
+        $fullProducts = $this->container->get('service_product')->getAll();
+        $products = array_slice($fullProducts, $offset, $amount);
+
+        $paging = [
+            'total' => ceil(count($fullProducts) / $amount),
+            'current' => $page
+        ];
+
+        return [$products, $paging];
+    }
+
+    public function getProduct(ServerRequest $request, Response $response, $args)
     {
         $sku = $args['sku'];
+        $product = $this->container->get('service_product')->getProductSku($sku);
 
-        if (!empty($sku)) {
-            $data = $this->container->get('service_product')->getProductSku($sku);
-            if (!empty($data)) {
-                $answer = [
-                    'result' => 'Success',
-                    'data' => $data
-                ];
-                $code = 200;
-            } else {
-                $answer = [
-                    'result' => 'ERROR_VALIDATION',
-                    'message' => 'Товара не существует.'
-                ];
-                $code = 404;
-            }
-        }
+        $responseData = [
+            'data' => $product
+        ];
 
-        $response->getBody()->write(json_encode($answer));
-        return $response
-            ->withHeader('content-type', 'application/json')
-            ->withStatus($code);
+        return $this->response($response, $responseData, 200);
     }
 
-    public function addProduct($request, $response, $args)
+    public function addProduct(ServerRequest $request, Response $response)
     {
-        $post = $request->getQueryParams();
+        $post = $request->getParsedBody();
 
         $sku = $post['sku'];
         $name = $post['name'];
         $price = $post['price'];
         $type = $post['type'];
 
-
-        $data = $this->container->get('service_product')->getAll();
-        $data = json_decode(json_encode($data), true);
-
-        $result = [];
-        foreach ($data as $product) {
+        $products = $this->container->get('service_product')->getAll();
+        $filtredProductSku = array_filter($products, function ($product) use ($sku) {
             if ($product['sku'] === $sku) {
-                $result[] = $product['sku'];
+                return $product;
             }
+        });
+
+        if (empty($filtredProductSku)) {
+            $this->container->get('service_product')->insert($sku, $name, $price, $type);
         }
 
-        if (!empty($post) && empty($result)) {
-            if (is_numeric($sku)) {
-                $this->container->get('service_product')->insert($sku, $name, $price, $type);
-                $answer = [
-                    'result' => 'Success',
-                    'message' => 'Товар успешно создан',
-                    'data' => $post
-                ];
-                $code = 201;
-            } else {
-                $answer = [
-                    'result' => 'ERROR_VALIDATION',
-                    'message' => 'SKU должен быть числовым.'
-                ];
-                $code = 400;
-            }
-        } else {
-            $answer = [
-                'result' => 'ERROR_VALIDATION',
-                'message' => 'Товар не создан. SKU должен быть уникальным'
-            ];
-            $code = 400;
-        }
+        $responseData = [
+            'data' => $post
+        ];
 
-        $response->getBody()->write(json_encode($answer));
-        return $response
-            ->withHeader('content-type', 'application/json')
-            ->withStatus($code);
+        return $this->response($response, $responseData, 201);
     }
 
-    public function updateProduct($request, $response, $args)
+    public function updateProduct(ServerRequest $request, Response $response)
     {
-        $post = $request->getQueryParams();
+        $post = $request->getParsedBody();
 
         $sku = $post['sku'];
         $name = $post['name'];
         $price = $post['price'];
         $type = $post['type'];
 
-        $searchSku = $this->container->get('service_product')->getProductSku($sku);
-        $searchSku = json_decode(json_encode($searchSku), true);
+        $this->container->get('service_product')->update($sku, $name, $price, $type);
 
-        if (!empty($post) && $searchSku) {
-            if (is_numeric($sku)) {
-                $this->container->get('service_product')->update($sku, $name, $price, $type);
-                $answer = [
-                    'result' => 'Success',
-                    'message' => 'Товар успешно изменен',
-                    'data' => $post
-                ];
-                $code = 200;
-            } else {
-                $answer = [
-                    'result' => 'ERROR_VALIDATION',
-                    'message' => 'SKU должен быть числовым.'
-                ];
-                $code = 400;
-            }
-        } else {
-            $answer = [
-                'result' => 'ERROR_VALIDATION',
-                'message' => 'Товар не создан. Нет товара с таким SKU.'
-            ];
-            $code = 400;
-        }
+        $responseData = [
+            'data' => $post
+        ];
 
-        $response->getBody()->write(json_encode($answer));
-        return $response
-            ->withHeader('content-type', 'application/json')
-            ->withStatus($code);
+        return $this->response($response, $responseData, 200);
     }
 
-    public function deleteProduct($request, $response, $args)
+    public function deleteProduct(ServerRequest $request, Response $response, $args)
     {
         $sku = $args['sku'];
 
-        $data = $this->container->get('service_product')->getProductSku($sku);
+        $product = $this->container->get('service_product')->delete((int)$sku);
 
-        $data = json_decode(json_encode($data), true);
+        $responseData = [
+            'data' => $product
+        ];
 
-        if (!empty($data)) {
-            $this->container->get('service_product')->delete((int)$sku);
-            $answer = [
-                'result' => 'Success',
-                'message' => 'Товар успешно удален'
-            ];
-            $code = 201;
-        } else {
-            $answer = [
-                'message' => 'ERROR_VALIDATION',
-                'message' => 'Товара не существует.'
-            ];
-            $code = 404;
-        }
-
-        $response->getBody()->write(json_encode($answer));
-        return $response
-            ->withHeader('content-type', 'application/json')
-            ->withStatus($code);
+        return $this->response($response, $responseData, 201);
     }
 }

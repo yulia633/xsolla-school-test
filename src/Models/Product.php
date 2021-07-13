@@ -13,7 +13,7 @@ class Product
 
     public function getAll()
     {
-        $sql = "SELECT id, sku, name, price, type FROM products WHERE id > 1 LIMIT 5";
+        $sql = "SELECT id, sku, name, price, type FROM products";
 
         $query = $this->pdo->query($sql);
 
@@ -82,7 +82,7 @@ class Product
 
     public function update($sku, $name, $price, $type)
     {
-        $sql = "UPDATE products SET sku = :sku, name = :name, price = :price, type = :type
+        $sql = "UPDATE products SET name = :name, price = :price, type = :type
             WHERE sku = :sku";
 
         $statement = $this->pdo->prepare($sql);
