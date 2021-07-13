@@ -58,21 +58,20 @@ DELETE | `/api/v1/products/{sku}` | Удаление товара по SKU.
 #### Результат 
 ```json
 {
-    "result": "Success",
     "data": [
         {
             "id": "2",
             "sku": "90",
             "name": "product1",
-            "price": "1",
-            "type": "hit"
+            "price": "15",
+            "type": "game"
         },
         {
             "id": "3",
             "sku": "92",
-            "name": "product3",
-            "price": "199.9",
-            "type": "game"
+            "name": "product1",
+            "price": "14",
+            "type": "hit"
         },
         {
             "id": "22",
@@ -91,14 +90,21 @@ DELETE | `/api/v1/products/{sku}` | Удаление товара по SKU.
         {
             "id": "24",
             "sku": "78",
-            "name": "product5",
-            "price": "89.8",
-            "type": "gemt"
+            "name": "product1",
+            "price": "15",
+            "type": "game"
         }
     ],
-    "page": 1
+    "paging": {
+        "total": 2,
+        "current": 1
+    }
 }
 ```
+
+### GET `api/v1/products?page=2` 
+Получение каталога товаров на второй странице.
+
 
 ### GET `/api/v1/products/{sku}`
 Получение информации о товаре по SKU.
@@ -106,12 +112,11 @@ DELETE | `/api/v1/products/{sku}` | Удаление товара по SKU.
 #### Результат 
 ```json
 {
-    "result": "Success",
     "data": {
-        "id": "2",
-        "sku": "90",
+        "id": "3",
+        "sku": "92",
         "name": "product1",
-        "price": "12",
+        "price": "14",
         "type": "hit"
     }
 }
@@ -142,8 +147,6 @@ type": тип
 #### Результат 
 ```json
 {
-    "result": "Success",
-    "message": "Товар успешно создан",
     "data": {
         "name": "product8",
         "sku": "103",
@@ -178,8 +181,6 @@ type": тип
 #### Результат 
 ```json
 {
-    "result": "Success",
-    "message": "Товар успешно изменен",
     "data": {
         "name": "product1",
         "sku": "90",
@@ -195,7 +196,6 @@ type": тип
 #### Результат 
 ```json
 {
-    "result": "Success",
-    "message": "Товар успешно удален"
+    "data": null
 }
 ```
