@@ -1,3 +1,5 @@
+![linter](https://github.com/yulia633/xsolla-school-test/workflows/linter/badge.svg)
+
 ### Предварительные требования
 
 - Git
