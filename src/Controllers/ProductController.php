@@ -99,7 +99,7 @@ class ProductController extends BaseController
     {
         $sku = $args['sku'];
 
-        $product = $this->container->get('service_product')->delete((int)$sku);
+        $product = $this->container->get('service_product')->delete($sku);
 
         $responseData = [
             'data' => $product
