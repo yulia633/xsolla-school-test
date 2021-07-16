@@ -4,105 +4,82 @@ namespace App\Models;
 
 class Product
 {
-    protected $pdo;
+    private $id;
 
-    public function __construct($db)
+    private $sku;
+
+    private $name;
+
+    private $price;
+
+    private $type;
+
+    public function __construct($id, $sku, $name, $price, $type)
     {
-        $this->pdo = $db;
+        $this->id = $id;
+        $this->sku = $sku;
+        $this->name = $name;
+        $this->price = $price;
+        $this->type = $type;
     }
 
-    public function getAll()
+    public function getId()
     {
-        $sql = "SELECT id, sku, name, price, type FROM products";
-
-        $query = $this->pdo->query($sql);
-
-        return $query->fetchAll();
+        return $this->id;
     }
 
-    public function get($id)
+    public function setId($id)
     {
-        $sql = "SELECT id
-        FROM products
-        WHERE id = :id";
-
-        $statement = $this->pdo->prepare($sql);
-
-        $statement->bindParam(':id', $id);
-
-        $statement->execute();
-
-        return $statement->fetch();
+        $this->id = $id;
     }
 
-    public function findBySku($sku)
+    public function getSku()
     {
-        $sql = "SELECT *
-        FROM products
-        WHERE sku = :sku";
-
-        $statement = $this->pdo->prepare($sql);
-
-        $statement->bindParam(':sku', $sku);
-
-        $statement->execute();
-
-        return $statement->fetch();
+        return $this->sku;
     }
 
-    public function findById($id)
+    public function setSku($sku)
     {
-        $sql = "SELECT *
-        FROM products
-        WHERE id = :id";
-
-        $statement = $this->pdo->prepare($sql);
-
-        $statement->bindParam(':id', $id);
-
-        $statement->execute();
-
-        return $statement->fetchAll();
+        $this->sku = $sku;
     }
 
-    public function insert($sku, $name, $price, $type)
+    public function getName()
     {
-        $sql = "INSERT INTO products (sku, name, price, type)
-            VALUES (:sku, :name, :price, :type)";
-
-        $statement = $this->pdo->prepare($sql);
-
-        $statement->bindParam(':sku', $sku);
-        $statement->bindParam(':name', $name);
-        $statement->bindParam(':price', $price);
-        $statement->bindParam(':type', $type);
-
-        $statement->execute();
+        return $this->name;
     }
 
-    public function update($sku, $name, $price, $type)
+    public function setName($name)
     {
-        $sql = "UPDATE products SET name = :name, price = :price, type = :type
-            WHERE sku = :sku";
-
-        $statement = $this->pdo->prepare($sql);
-
-        $statement->bindParam(':sku', $sku);
-        $statement->bindParam(':name', $name);
-        $statement->bindParam(':price', $price);
-        $statement->bindParam(':type', $type);
-
-        $statement->execute();
+        $this->name = $name;
     }
 
-    public function delete($sku)
+    public function getPrice()
     {
-        $sql = "DELETE FROM `products` WHERE `sku`=:sku";
+        return $this->price;
+    }
 
-        $statement = $this->pdo->prepare($sql);
+    public function setPrice($price)
+    {
+        $this->price = $price;
+    }
 
-        $statement->bindParam(':sku', $sku);
+    public function getType()
+    {
+        return $this->type;
+    }
 
-        $statement->execute();
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    public function getProductArray()
+    {
+        return [
+            'sku' => $this->sku,
+            'name' => $this->name,
+            'price' => $this->price,
+            'type' => $this->type
+        ];
     }
 }

@@ -2,56 +2,57 @@
 
 namespace App\Services;
 
+use App\ProductMysqlStorage;
 use App\Models\Product;
 
 class ProductService
 {
-    protected $productModel;
+    protected $productMysqlSrorage;
 
-    public function __construct(Product $model)
+    public function __construct(ProductMysqlStorage $model)
     {
-        $this->productModel = $model;
+        $this->productMysqlSrorage = $model;
     }
 
     public function getAll()
     {
 
-        return $this->productModel->getAll();
+        return $this->productMysqlSrorage->getAll();
     }
 
     public function get($id)
     {
 
-        return $this->productModel->get($id);
+        return $this->productMysqlSrorage->get($id);
     }
 
     public function getProductSku($sku)
     {
 
-        return $this->productModel->findBySku($sku);
+        return $this->productMysqlSrorage->findBySku($sku);
     }
 
     public function getProductId($id)
     {
 
-        return $this->productModel->findById($id);
+        return $this->productMysqlSrorage->findById($id);
     }
 
     public function insert($sku, $name, $price, $type)
     {
 
-        return $this->productModel->insert($sku, $name, $price, $type);
+        return $this->productMysqlSrorage->insert($sku, $name, $price, $type);
     }
 
     public function update($sku, $name, $price, $type)
     {
 
-        return $this->productModel->update($sku, $name, $price, $type);
+        return $this->productMysqlSrorage->update($sku, $name, $price, $type);
     }
 
     public function delete($sku)
     {
 
-        return $this->productModel->delete($sku);
+        return $this->productMysqlSrorage->delete($sku);
     }
 }
