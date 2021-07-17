@@ -20,12 +20,6 @@ class ProductService
         return $this->productMysqlSrorage->getAll();
     }
 
-    public function get($id)
-    {
-
-        return $this->productMysqlSrorage->get($id);
-    }
-
     public function getProductSku($sku)
     {
 

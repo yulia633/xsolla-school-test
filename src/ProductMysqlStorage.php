@@ -23,21 +23,6 @@ class ProductMysqlStorage
         return $query->fetchAll();
     }
 
-    public function get($id)
-    {
-        $sql = "SELECT id
-        FROM products
-        WHERE id = :id";
-
-        $statement = $this->pdo->prepare($sql);
-
-        $statement->bindParam(':id', $id);
-
-        $statement->execute();
-
-        return $statement->fetch();
-    }
-
     public function findBySku($sku)
     {
         $sql = "SELECT *
