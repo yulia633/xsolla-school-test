@@ -61,9 +61,7 @@ class ProductController extends BaseController
 
         $products = $this->container->get('service_product')->getAll();
         $filtredProductSku = array_filter($products, function ($product) use ($sku) {
-            if ($product['sku'] === $sku) {
-                return $product;
-            }
+            return $product['sku'] === $sku;
         });
 
         if (empty($filtredProductSku)) {
